@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 style="text-align: center;">回收站列表</h1>
+    <div style="text-align: center;margin: 20px 0;" >
+        <button id="btn" >返回首页</button>
+    </div>
+    <div>
+        <table align="center" width="1200px" border="1px" rules="all">
+            <tr>
+                <td>序号</td>
+                <td>标题</td>
+                <td>所属分类</td>
+                <td>图片</td>
+                <td>作者</td>
+                <td>内容</td>
+                <td>状态</td>
+                <td>添加时间</td>
+                <td>修改时间</td>
+                <td>操作</td>
+            </tr>
+            {{each articles item index}}
+            <tr>
+                <td>{{index + 1}}</td>
+                <td>{{item.title}}</td>
+                <td>{{item.bookTitle}}</td>
+                <td>{{item.picture}}</td>
+                <td>{{item.author}}</td>
+                <td>{{item.content}}</td>
+                <td>{{item.audit}}</td>
+                <td>{{item.updateTime}}</td>
+                <td>{{item.addTime}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+</body>
+<script>
+    const btnEle = document.getElementById("btn");
+    btnEle.onclick = function(){
+        location.href="/"
+    }
+</script>
+</html>

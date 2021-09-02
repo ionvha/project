@@ -1,0 +1,110 @@
+<div class="layui-header">
+    <div class="layui-logo layui-hide-xs layui-bg-black">脸书后台管理系统</div>
+    <!-- 头部区域（可配合layui 已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <!-- 移动端显示 -->
+      <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+        <i class="layui-icon layui-icon-spread-left"></i>
+      </li>
+
+      <!-- <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
+      <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
+      <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>
+      <li class="layui-nav-item"> -->
+        <a href="javascript:;">nav groups</a>
+        <dl class="layui-nav-child">
+          <dd><a href="">menu 11</a></dd>
+          <dd><a href="">menu 22</a></dd>
+          <dd><a href="">menu 33</a></dd>
+        </dl>
+      </li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+        <a href="javascript:;">
+          <img src="{{userfoin.picture}}"
+            class="layui-nav-img" id="headimg">
+          {{userfoin.username}}
+        </a>
+        <dl class="layui-nav-child">
+          <dd><a href="#" id="material">个人信息</a></dd>
+          <dd><a href="">设置</a></dd>
+          <dd><a href="javascript:;" onclick='gengai()'>修改密码</a></dd>
+          <dd><a href="/logout" id="logout"> <i class="layui-icon layui-icon-logout"></i> 退出登录</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+        <a href="javascript:;">
+          <i class="layui-icon layui-icon-more-vertical"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <script>
+      let htmlStr = `
+        <form class="layui-form" action="">
+          <div class="layui-form-item">
+            <label class="layui-form-label">原密码</label>
+            <div class="layui-input-inline">
+              <input id='oldpassword' type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-inline">
+              <input id ='password' type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">确认新密码</label>
+            <div class="layui-input-inline">
+              <input id='repassword' type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+        </form>`
+      function gengai(){
+        layer.open({
+        title: "修改密码",
+        shadeClose: true,
+        skin: 'layui-layer-rim', //加上边框
+        area: ['500px', '400px'], //宽高
+        content: htmlStr,
+        btn: "确认修改",
+        yes: function (index, layero) {
+          //按钮的回调
+          // 获取三个密码
+          let oldpwd = $("#oldpassword").val();
+          let newpwd = $("#password").val();
+          let renewpwd = $("#repassword").val();
+          console.log(oldpwd, newpwd, renewpwd)
+          if ([oldpwd, newpwd, renewpwd].includes('')) {
+            alert('不能为空')
+          }
+          if (newpwd !== renewpwd) {
+            alert('两次密码不一致')
+            // layer.msg('两次密码不一致', { icon: 1 })
+          }
+          // 发送ajax请求，进行更新密码
+          let xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function(){
+            if(this.readyState === 4 && this.status === 200){
+              // layer.close(index)
+              let {code,message} = JSON.parse(this.responseText)
+              if(code === 20000){
+                layer.msg(message)
+                location.href = "/logout"
+              }else{
+                alert(message)
+              }
+            }
+          }
+          xhr.open('post','/updatePassword',true)
+          xhr.setRequestHeader("Content-type",'application/x-www-form-urlencoded')
+          let formData = `oldpwd=${oldpwd}&newpwd=${newpwd}&renewpwd=${renewpwd}`
+          xhr.send(formData)
+          
+        }
+      });
+    }
+
+  </script>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {{ each arrtiy item index}}
+        <p>
+            封面：<img src="{{item.picture}}" width="100px" alt="">
+        </p>
+        <p>
+            标题：{{item.title}}
+        </p>
+        <p>
+            分类：{{item.bookTitle}}
+        </p>
+        <p>
+            作者：{{item.author}}
+        </p>
+        <p>
+            内容：{{item.content}}
+        </p>
+        <p>
+            状态：{{item.audit}}
+        </p>
+    {{ /each }}
+</body>
+</html>

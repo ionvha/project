@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3370ff;
+        }
+
+
+        .box {
+            width: 350px;
+            height: 450px;
+            margin: 50px auto;
+            box-shadow: 0 0 15px #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #ccc;
+        }
+
+        .box1 {
+            margin: 100px auto;
+            width: 263px;
+            height: 300px;
+            /* border: 1px solid red; */
+        }
+
+        h6 {
+            margin: 10px 0;
+        }
+
+        h6 span {
+            color: #646a73;
+        }
+
+        .cellphone span {
+            display: inline-block;
+            border-bottom: 2px solid #3370ff;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            color: #3370ff;
+        }
+
+        /* .input {
+            width: 240px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        } */
+
+        .input input:first-child {
+            width: 50px;
+            height: 34px;
+            border: 0;
+            outline: 0;
+            text-indent: 10px;
+        }
+
+        .input span {
+            color: #ccc;
+        }
+
+        .input input:last-child {
+            width: 150px;
+            border: 0px;
+            outline: 0px;
+        }
+
+        #input3 {
+            line-height: 34px;
+            outline: 0px;
+            width: 240px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-indent: 20px;
+        }
+
+        #input4 {
+            line-height: 34px;
+            outline: 0px;
+            width: 240px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-indent: 20px;
+        }
+
+        #input2 {
+            line-height: 34px;
+            outline: 0px;
+            width: 240px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-indent: 20px;
+        }
+
+        /* .input:hover {
+            border: 1px solid #4e83ff;
+        } */
+
+        #input2:hover {
+            border: 1px solid #4e83ff;
+        }
+
+        #input3:hover {
+            border: 1px solid #4e83ff;
+        }
+
+        button {
+            width: 240px;
+            height: 34px;
+            border-radius: 10px;
+            outline: 0px;
+            border: 0px;
+            background-color: #bacefd;
+            color: #fff;
+        }
+
+        .box .box1 div:last-child {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .shouzhi {
+            cursor: not-allowed;
+            margin-top: 10px;
+        }
+
+        .color {
+            background-color: #3370ff;
+            cursor: pointer;
+        }
+
+        .coloc2 {
+            background-color: #ff5b4c;
+        }
+
+        #text {
+            font-size: 12px;
+            color: #ff5b4c;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .border {
+            border: 1px solid #ff5b4c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="box1">
+            <h2>注册脸书博客系统</h2>
+            <h6>
+                <span>注册即代表你已阅读并同意</span>
+                <a href="#">服务协议</a>
+                <span>和</span>
+                <a href="#">隐私政策</a>
+            </h6>
+            <!-- <div class="cellphone">
+                <span>手机号</span>
+            </div> -->
+            <form action="/goregister" method="POST">
+                <div class="input">
+                    <!-- <input type="text" id="input1"value="+86"> -->
+                    <!-- <span> | </span> -->
+                    <input type="text" id="input2" placeholder="请输入你的用户名" name="username" maxlength="11">
+                    <input type="password" name="password" placeholder="请输入你的密码" id="input3">
+                    <input type="password" name="passwordss" placeholder="请确认你的密码" id="input4">
+                </div>
+                <div id="text"></div>
+                <div>
+
+                </div>
+                <div>
+                    <button id="btn" class="shouzhi">注册</button>
+                </div>
+            </form>
+
+            <div>
+                <span>已有账号</span>
+                <a href="/login">立即登录</a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var input3 = document.getElementById('input3');
+    let input2 = document.getElementById('input2');
+    let input4 = document.getElementById('input4');
+    var text = document.getElementById('text');
+
+    var username = input2.value;
+    var password = input3.value;
+    var btn = document.getElementById("btn");
+
+    input2.onblur = function(){
+        let username = input2.value;
+        let userreg = /^[0-9a-zA-Z]{6,}$/;
+        if(!userreg.test(username)){
+            text.innerText = "用户名格式不规范"
+            return false;
+        }else {
+            text.innerText = '';
+        }
+    }
+
+    input3.onblur = function(){
+        let password = input3.value;
+        let passwordreg = /^.{6,}$/;
+        if(!passwordreg.test(password)){
+            text.innerText = "密码格式不规范"
+            return false;
+        }else {
+            text.innerText = '';
+        }
+    }
+
+    input4.onblur = function(){
+        if(input3.value !== input4.value){
+            input4.value = "";
+            text.innerText = "两次输入的密码不一致"
+            return false;
+        }else {
+            text.innerText = "";
+        }
+    }
+
+
+    input2.onkeydown = function () {
+        let value = input2.value;
+
+        if (value.length > 4) {
+            btn.classList.add("color");
+        } else if (value.length < 4) {
+            btn.classList.remove("color");
+        }
+    }
+
+    btn.onclick = function(){
+        let username = input2.value;
+        let userreg = /^[0-9a-zA-Z]{6,}$/;
+        if(!userreg.test(username)){
+            text.innerText = "用户名格式不规范111"
+            return false;
+        }else {
+            text.innerText = '';
+        }
+
+        let password = input3.value;
+        let passwordreg = /^.{6,}$/;
+        if(!passwordreg.test(password)){
+            text.innerText = "密码格式不规范111"
+            return false;
+        }else {
+            text.innerText = '';
+        }
+
+        if(input3.value !== input4.value){
+            input4.value = "";
+            text.innerText = "两次输入的密码不一致"
+            return false;
+        }else {
+            text.innerText = "";
+        }
+    }
+
+    // btn.onclick = function (e) {
+    //     e.preventDefault();
+
+    //     console.log(input2);
+    //     console.log(input3);        
+
+    //     console.log(input2.value)
+    //     console.log(input3.value)
+
+
+    //     console.log(username)
+    //     console.log(password)
+    //     let xhr = new XMLHttpRequest();
+
+    //     xhr.onreadystatechange = function () {
+    //         if (xhr.readyState === 4 && xhr.status === 200) {
+    //             console.log(xhr.responseText)
+    //             let {number,status} = JSON.parse(xhr.responseText)
+    //             if(number == 11){
+    //                 location.href = '/'
+    //             }else{
+    //                 alert("错误")
+    //             }
+    //         }
+    //     }
+
+    //     xhr.open("post", "/dologin", true);
+
+    //     xhr.setRequestHeader(
+    //         "Content-type", "application/x-www-form-urlencoded")
+
+    //     xhr.send(`username=${input2.value}&password=${input3.value}`);
+    // }
+</script>
+
+</html>

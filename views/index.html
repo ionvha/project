@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>脸书后台管理系统</title>
+  <link rel="stylesheet" href="/static/layui-v2.6.8/layui/css/layui.css">
+  <style>
+    a {
+      text-decoration: none;
+    }
+
+    #mid {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background-color: #000;
+      opacity: .3;
+      z-index: 99998;
+    }
+
+    #login {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      z-index: 99999;
+      width: 315px;
+      height: 400px;
+      border-radius: 10px;
+    }
+
+    #login ul {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #login ul li {
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    #login ul li img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    #headfile {
+      display: none;
+      display: block;
+    }
+
+    #login ul li:last-child {
+      text-align: center;
+    }
+
+    #quanrenbtn,
+    #quxiaobtn {
+      width: 50px;
+      height: 30px;
+      border-radius: 10px;
+      outline: 0;
+      border: 1px solid skyblue;
+    }
+
+    #headfile {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="mid"></div>
+  <div id="login">
+    <ul>
+      <li>
+        头像：
+        <img src="{{userfoin.picture}}" alt="" id="img">
+        <input type="file" id="headfile">
+        <button id="headbtn">上传新头像</button>
+      </li>
+      <li>
+        昵称：
+        <input type="text" id="headname">
+      </li>
+      <li>
+        性别：
+        <input type="radio" name="sex">男
+        <input type="radio" name="sex">女
+        <input type="radio" name="sex" checked>保密
+      </li>
+      <li>
+        <button id="quanrenbtn">确认</button>
+        <button id="quxiaobtn">取消</button>
+      </li>
+    </ul>
+  </div>
+  <div class="layui-layout layui-layout-admin">
+    {{include "./common/header.html"}}
+
+    {{include './common/side-menu.html'}}
+
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+      <div style="padding: 15px; ">
+        <h1 style="text-align: center;">文章列表</h1>
+        <div style="text-align: center;margin:20px auto">
+          <!-- <button id="addBtn">添加文章</button> -->
+
+          <!-- <button id="logout">退出登录</button> -->
+        </div>
+        <div>
+          <table align="center" width="1200px" border="1px" rules="all" class="layui-table" lay-size="sm">
+            <tr>
+              <td>序号</td>
+              <td>标题</td>
+              <td>所属分类</td>
+              <td>图片</td>
+              <td>作者</td>
+              <td>内容</td>
+              <td>状态</td>
+              <td>添加时间</td>
+              <td>修改时间</td>
+              <td>操作</td>
+            </tr>
+            {{each articles item index}}
+            <tr>
+              <td>{{index + 1}}</td>
+              <td>{{item.title}}</td>
+              <td>{{item.bookTitle}}</td>
+              <td><img src="/{{item.picture}}" width="100px" alt=""></td>
+              <td>{{item.author}}</td>
+              <!-- <td>{{item.content}}</td> -->
+              <!-- <td><a href="/detail?id={{item.id}}" onclick="check()">查看详情</a></td> -->
+              <td><a href="javascript:;" class="check" text="{{item}}">查看详情</a></td>
+              <td>{{item.audit}}</td>
+              <td>{{item.updateTime | dateFormat 'YYYY-MM'}}</td>
+              <td>{{item.addTime | dateFormat 'YYYY-MM-DD'}}</td>
+              <td>
+                <!-- <a href="/edit?id={{item.id}}&picture={{item.picture}}">编辑</a> -->
+                <a href="/edit?id={{item.id}}&picture={{item.picture}}" type="button" class="layui-btn layui-btn-sm"
+                  title="编辑">
+                  <i class="layui-icon">&#xe642;</i>
+                </a>
+                <!-- <a href="javascript:;" onclick="ifAffirm('{{item.id}}','{{item.picture}}')">删除</a> -->
+                <a href="javascript:;" onclick="ifAffirm('{{item.id}}','{{item.picture}}')" type="button"
+                  class="layui-btn layui-btn-sm" title="删除">
+                  <i class="layui-icon">&#xe640;</i>
+                </a>
+                <!-- <a href="/recyclek?id={{item.id}}">加入回收站</a> -->
+                <!-- <a href="javascript:;" onclick="recyclek(this,'{{item.id}}')">加入回收站</a> -->
+                <a href="javascript:;" onclick="recyclek(this,'{{item.id}}')" type="button"
+                  class="layui-btn layui-btn-sm" title="加入回收站">
+                  <i class="layui-icon">&#x1006;</i>
+                </a>
+                <!-- <a href="javascript:;" onclick="deletes(this,'{{item.id}}','{{item.picture}}')">ajax删除</a> -->
+                <a href="javascript:;" onclick="deletes(this,'{{item.id}}','{{item.picture}}')" type="button"
+                  class="layui-btn layui-btn-sm" title="ajax删除" style="background-color: red">
+                  <i class="layui-icon">&#xe640;</i>
+                </a>
+                <a href="/editContent?id={{item.id}}" title="添加内容" class="layui-btn layui-btn-sm" >添加</a>
+              </td>
+            </tr>
+            {{/each}}
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    {{include './common/footer.html'}}
+
+  </div>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+  <script src="/static/layui-v2.6.8/layui/layui.js"></script>
+  <script>
+
+    
+    //JS 
+    layui.use(['element', 'layer', 'util'], function () {
+      var element = layui.element
+        , layer = layui.layer
+        , util = layui.util
+        , $ = layui.$;
+
+      //头部事件
+      util.event('lay-header-event', {
+        //左侧菜单事件
+        menuLeft: function (othis) {
+          layer.msg('展开左侧菜单的操作', { icon: 0 });
+        }
+        , menuRight: function () {
+          layer.open({
+            type: 1
+            , content: '<div style="padding: 15px;">处理右侧面板的操作</div>'
+            , area: ['260px', '100%']
+            , offset: 'rt' //右上角
+            , anim: 5
+            , shadeClose: true
+          });
+        }
+      });
+
+    });
+    
+
+    // 永久删除
+    function ifAffirm(id, picture) {
+      let result = layer.confirm("确认删除吗", {
+        btn: ["是的", "取消"],
+        shadeClose: true,
+        shade: [0.3, "#000"]
+      }, () => {
+        // location.href = `/delete?id=${id}&picture=${picture}`
+        location.href = "/delete?id=" + id + "&picture=" + picture;
+      }, () => {
+        layer.msg("你取消")
+      }
+      )
+    }
+
+    // ajax删除；
+    function deletes(ele, id, picture) {
+
+      layer.confirm('确认删除吗', {
+        btn: ['是的', '取消'], //按钮
+        shadeClose: true,
+        shade: [0.3, '#000']
+      }, () => {
+        //点了是的按钮触发
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+          if (this.readyState === 4 && this.status === 200) {
+            let data = JSON.parse(this.responseText);
+            let { code, message } = data;
+            if (code === 20000) {
+              // 删除成功,删除当前tr行
+              $(ele).parents('tr').remove()
+              setTimeout(function () {
+                layer.msg('删除成功', { icon: 1 })
+              }, 500)
+
+              layer.closeAll();
+            } else if (code === 30004) {
+              layer.msg(message)
+              location.href = "/login"
+            } else {
+              layer.msg('删除失败')
+            }
+          }
+        }
+        xhr.open('post', '/ajaxdelete', true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send("id=" + id + "&img=" + picture + "&flag=ajax");
+
+      }, () => {
+        layer.msg('取消删除')
+      });
+    }
+
+    //ajax回收站
+    function recyclek(ele, id) {
+      // layer.confirm('确认加入回收站吗',{
+      //   btn: ['是的','取消'],
+      //   shadeClose: true,
+      //   shade:[0.3,'#000']
+      // },()=>{
+      console.log(id);
+      let xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+          let data = JSON.parse(this.responseText);
+          let { code, message } = data;
+          if (code === 20000) {
+            $(ele).parents('tr').remove();
+            setTimeout(function () {
+              layer.msg('删除成功')
+            }, 500)
+            layer.closeAll();
+          } else if (code === 30004) {
+            layer.msg(message);
+            location.hrer = "/login";
+          } else {
+            layer.msg("加入失败");
+          }
+        }
+      }
+      xhr.open("post", "/ajaxrecyclek", true);
+      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhr.send('id=' + id);
+      // },()=>{
+      //   layer.msg('取消加入回收站')
+      // })
+    }
+
+
+    // 遮盖层
+    $(function () {
+      $("#material").click(function () {
+        $("#mid").css({
+          display: "block"  //遮盖层显示
+        });
+        $("#login").show();
+      });
+      $("#quxiaobtn").click(function () {
+        $("#login").hide();
+        $("#mid").hide();
+      });
+      $("#quanrenbtn").click(function () {
+        $("#login").hide();
+        $("#mid").hide();
+      });
+    });
+
+    // ajax更新头像
+    $("#headbtn").click(function () {
+      $("#headfile").click();
+    })
+
+    $("#quanrenbtn").click(function () {
+      // 获取二进制图片
+      let file = $('#headfile')[0].files[0];
+      let formData = new FormData();
+
+      formData.append("file", file);
+      let xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+          let data = JSON.parse(this.responseText);
+          let { code, message, imgPath } = data;
+          $("#headimg").attr("src", imgPath);
+
+        }
+      }
+      xhr.open('post', '/head', true);
+      xhr.send(formData);
+    })
+
+    // 头像页面回显
+    document.getElementById("headfile").onchange = function () {
+      let file = this.files[0];
+      if (!file) {
+        return;
+      }
+      let fileReader = new FileReader();
+      fileReader.readAsDataURL(file)
+      fileReader.onload = function (e) {
+        document.getElementById("img").src = this.result;
+      }
+    }
+
+    // 查看详情
+    // function check{
+
+    //   let data = JSON.parse( $(this).attr('text') );
+    //   let { title, author, picture, content, bookTitle } = data;
+    //   let text = `
+    //   <span>标题：${title}</span>
+    //   <span>作者：${title}</span>
+    //   <span>封面：<img src="${picture}" alt=""> </span>
+    //   <span>内容：${content}</span>
+    //   `;
+    //   layer.open({
+    //     type: 1,
+    //     // skin: 'layui-layer-rim', //加上边框
+    //     area: ['420px', '240px'], //宽高
+    //     content: text
+    //   });
+    // }
+
+    $(".check").on('click',function () {
+      // alert(1)
+      let data = JSON.parse( $(this).attr('text') )
+
+      let { title, author, picture, content, bookTitle } = data;
+      // let {title,content,author} = data;
+      // 组装内容
+      let htmlStr = `
+        <div style="padding:10px;">
+          <h2 style='text-align:center'>标题：${title}</h2>
+          <h2 style='text-align:center'>作者： ${author}</h2> 
+          <p><img src="${picture}" alt=""></p>
+          <p>${content}</p>
+        <div>
+      `;
+      layer.open({
+        type: 1,
+        shadeClose: true,
+        area: ['820px', '540px'], //宽高
+        content: htmlStr
+      });
+    })
+
+  </script>
+</body>
+
+</html>

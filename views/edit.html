@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <h1>{{article.id}}</h1> -->
+    <form action="/update" method="POST" enctype="multipart/form-data">
+        <input type="hidden" id="id" name="id" value="">
+        <input type="hidden" id="oldImg" name="oldImg" value="">
+        <p>
+            标题：<input type="text" id="title" name="title" autocomplete="off">
+        </p>
+        <p>
+            作者：<input type="text" id="author" name="author" autocomplete="off">
+        </p>
+        <p>
+            封面：<input type="file" name="picture" autocomplete="off" id="imgs">
+        </p>
+        <p>
+            <img src="" alt="" id="img" width="150px">
+        </p>
+        <p>
+            审核：
+            <input type="radio" name="status" value="0"> 待审核
+            <input type="radio" name="status" value="1"> 审核通过
+            <input type="radio" name="status" value="2"> 审核失败
+        </p>
+        <p>
+            所属分类：
+            <select name="cat_id" id="cat_id" >
+                <option value="0">请选择</option>
+                {{each cats item index}}
+                    <option value="{{item.id}}">{{item.bookTitle}}</option>
+                {{/each}}
+            </select>
+        </p>
+        <p>
+            内容：
+            <textarea name="content" id="content" cols="30" rows="10"></textarea>
+        </p>
+        <p>
+            <button>确认更新</button>
+        </p>
+    </form>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script>
+        let titleEle = document.getElementById("title");
+        let idEle = document.getElementById("id");
+        let authorEle = document.getElementById("author");
+        let contentEle = document.getElementById("content");
+        let statusEle = document.getElementsByName("status");
+        let selectEle = document.getElementById("cat_id");
+        let optins = document.getElementById("#cat_id option");
+
+        let id = "{{article.id}}";
+        let status = "{{ article.audit}}";
+        let cat_id = "{{ article.cat_id}}"
+
+        let input = [...statusEle].find( item => item.value == status);
+        input.checked = true;
+
+        document.getElementById("imgs").onchange = function(){
+            let file = this.files[0];
+            if(!file){
+                return;
+            }
+            let fileReader=new FileReader();
+            fileReader.readAsDataURL(file)
+            fileReader.onload = function(e){
+                document.getElementById("img").src = this.result;
+            }
+        }
+
+        $("#cat_id").val(cat_id);
+        $("#id").val(id)
+
+        // titleEle.value = "{{article.title}}";
+        // authorEle.value = "{{article.author}}";
+        // contentEle.value = "{{article.content}}";
+
+        $("#title").val("{{article.title}}");
+        $("#author").val("{{article.author}}");
+        $("#content").val("{{article.content}}");
+        $("#oldImg").val("{{article.picture}}");
+
+        $("#img")[0].src = "/{{article.picture}}";
+</script>
+</html>
