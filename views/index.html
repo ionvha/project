@@ -114,9 +114,6 @@
       <div style="padding: 15px; ">
         <h1 style="text-align: center;">文章列表</h1>
         <div style="text-align: center;margin:20px auto">
-          <!-- <button id="addBtn">添加文章</button> -->
-
-          <!-- <button id="logout">退出登录</button> -->
         </div>
         <div>
           <table align="center" width="1200px" border="1px" rules="all" class="layui-table" lay-size="sm">
@@ -132,65 +129,128 @@
               <td>修改时间</td>
               <td>操作</td>
             </tr>
-            {{each articles item index}}
+            <!-- {{each articles item index}}
             <tr>
               <td>{{index + 1}}</td>
               <td>{{item.title}}</td>
               <td>{{item.bookTitle}}</td>
               <td><img src="/{{item.picture}}" width="100px" alt=""></td>
               <td>{{item.author}}</td>
-              <!-- <td>{{item.content}}</td> -->
-              <!-- <td><a href="/detail?id={{item.id}}" onclick="check()">查看详情</a></td> -->
               <td><a href="javascript:;" class="check" text="{{item}}">查看详情</a></td>
               <td>{{item.audit}}</td>
               <td>{{item.updateTime | dateFormat 'YYYY-MM'}}</td>
               <td>{{item.addTime | dateFormat 'YYYY-MM-DD'}}</td>
               <td>
-                <!-- <a href="/edit?id={{item.id}}&picture={{item.picture}}">编辑</a> -->
                 <a href="/edit?id={{item.id}}&picture={{item.picture}}" type="button" class="layui-btn layui-btn-sm"
                   title="编辑">
                   <i class="layui-icon">&#xe642;</i>
                 </a>
-                <!-- <a href="javascript:;" onclick="ifAffirm('{{item.id}}','{{item.picture}}')">删除</a> -->
                 <a href="javascript:;" onclick="ifAffirm('{{item.id}}','{{item.picture}}')" type="button"
                   class="layui-btn layui-btn-sm" title="删除">
                   <i class="layui-icon">&#xe640;</i>
                 </a>
-                <!-- <a href="/recyclek?id={{item.id}}">加入回收站</a> -->
-                <!-- <a href="javascript:;" onclick="recyclek(this,'{{item.id}}')">加入回收站</a> -->
                 <a href="javascript:;" onclick="recyclek(this,'{{item.id}}')" type="button"
                   class="layui-btn layui-btn-sm" title="加入回收站">
                   <i class="layui-icon">&#x1006;</i>
                 </a>
-                <!-- <a href="javascript:;" onclick="deletes(this,'{{item.id}}','{{item.picture}}')">ajax删除</a> -->
                 <a href="javascript:;" onclick="deletes(this,'{{item.id}}','{{item.picture}}')" type="button"
                   class="layui-btn layui-btn-sm" title="ajax删除" style="background-color: red">
                   <i class="layui-icon">&#xe640;</i>
                 </a>
-                <a href="/editContent?id={{item.id}}" title="添加内容" class="layui-btn layui-btn-sm" >添加</a>
+                <a href="/editContent?id={{item.id}}" title="添加内容" class="layui-btn layui-btn-sm">添加</a>
               </td>
             </tr>
-            {{/each}}
+            {{/each}} -->
           </table>
         </div>
       </div>
+      <div id="test1"></div>
     </div>
 
+    
 
     {{include './common/footer.html'}}
+
 
   </div>
   <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
   <script src="/static/layui-v2.6.8/layui/layui.js"></script>
   <script>
 
-    
+    let curr = 1;
+    let limit = 5;
+    function getArticleData(curr,limit,callback){
+      $.get('/articleCount',{curr,limit},function(res){
+        callback && callback(res)
+      },'json')
+    }
+
+    function renderTable(data){
+      let tbodyHtml = '';
+      data.forEach((item,index) => {
+        index  = index + 1;
+        let copyItem = JSON.stringify(item);
+        console.log(item)
+        let {id,title,bookTitle,picture,author,content,audit,updateTime,addTime} = item;
+        tbodyHtml += `
+        <tr>
+              <td>${index}</td>
+              <td>${title}</td>
+              <td>${bookTitle}</td>
+              <td><img src="/${picture}" width="100px" alt=""></td>
+              <td>${author}</td>
+              <td><a href="javascript:;" class="check" text='${copyItem}'>查看详情</a></td>
+              <td>${audit}</td>
+              <td>${updateTime}</td>
+              <td>${addTime}</td>
+              <td>
+                <a href="/edit?id=${id}&picture=${picture}" type="button" class="layui-btn layui-btn-sm"
+                  title="编辑">
+                  <i class="layui-icon">&#xe642;</i>
+                </a>
+                <a href="javascript:;" onclick="ifAffirm('${id}','${picture}')" type="button"
+                  class="layui-btn layui-btn-sm" title="删除">
+                  <i class="layui-icon">&#xe640;</i>
+                </a>
+                <a href="javascript:;" onclick="recyclek(this,'${id}')" type="button"
+                  class="layui-btn layui-btn-sm" title="加入回收站">
+                  <i class="layui-icon">&#x1006;</i>
+                </a>
+                <a href="javascript:;" onclick="deletes(this,'${id}','${picture}')" type="button"
+                  class="layui-btn layui-btn-sm" title="ajax删除" style="background-color: red">
+                  <i class="layui-icon">&#xe640;</i>
+                </a>
+                <a href="/editContent?id=${id}" title="添加内容" class="layui-btn layui-btn-sm">添加</a>
+              </td>
+            </tr>
+        `
+      })
+      return tbodyHtml;
+    }
+
+    // 渲染分页的解构
+    function renderPage(laypage,ele,count,limit){
+      laypage.render({
+        elem: ele,
+        count,
+        limit,
+        jump:function(obj,first) {
+          let {curr,limit} = obj;
+          getArticleData(curr,limit,res => {
+            let tbody = renderTable(res.data)
+            $('tbody').html(tbody);
+          })
+        }
+      })
+    }
+
     //JS 
-    layui.use(['element', 'layer', 'util'], function () {
+    layui.use(['element', 'layer', 'util', 'laypage'], function () {
       var element = layui.element
         , layer = layui.layer
         , util = layui.util
-        , $ = layui.$;
+        , $ = layui.$
+        , laypage = layui.laypage;
 
       //头部事件
       util.event('lay-header-event', {
@@ -210,8 +270,19 @@
         }
       });
 
+      // 分页事件
+      // laypage.render({
+      //   elem: 'test1',//注意，这里的 test1 是 ID，不用加 # 号
+      //   count: 50 ,//数据总数，从服务端得到
+      // });
+
+      getArticleData(curr,limit,res=>{
+        let {count,data} = res;
+        // 渲染分页结构
+        renderPage(laypage,'test1',count,limit)
+      })
     });
-    
+
 
     // 永久删除
     function ifAffirm(id, picture) {
@@ -358,28 +429,9 @@
       }
     }
 
-    // 查看详情
-    // function check{
-
-    //   let data = JSON.parse( $(this).attr('text') );
-    //   let { title, author, picture, content, bookTitle } = data;
-    //   let text = `
-    //   <span>标题：${title}</span>
-    //   <span>作者：${title}</span>
-    //   <span>封面：<img src="${picture}" alt=""> </span>
-    //   <span>内容：${content}</span>
-    //   `;
-    //   layer.open({
-    //     type: 1,
-    //     // skin: 'layui-layer-rim', //加上边框
-    //     area: ['420px', '240px'], //宽高
-    //     content: text
-    //   });
-    // }
-
-    $(".check").on('click',function () {
-      // alert(1)
-      let data = JSON.parse( $(this).attr('text') )
+    $("table").on('click', '.check', function () {
+      console.log($(this).attr('text'))
+      let data = JSON.parse($(this).attr('text'))
 
       let { title, author, picture, content, bookTitle } = data;
       // let {title,content,author} = data;
@@ -399,6 +451,7 @@
         content: htmlStr
       });
     })
+
 
   </script>
 </body>

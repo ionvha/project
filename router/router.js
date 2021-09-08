@@ -26,6 +26,7 @@ const ArticleController = require("../controller/ArticleController.js");
 const UserController = require("../controller/UserController.js");
 const ClassifyController = require("../controller/ClassifyController.js");
 const dbQuery = require("../model/query.js");
+const { runInContext } = require("vm");
 
 // 文章列表
 router.get("/",ArticleController.index);
@@ -100,7 +101,9 @@ router.post('/classifyInsert', upload.single(''), ClassifyController.classifyIns
 router.get('/classifyData',ClassifyController.classifyData);
 
 // 分类删除操作
-router.post('/classifydelete',ClassifyController.classifydelete)
+router.post('/classifydelete',ClassifyController.classifydelete);
 
+// 文章分页数据
+router.get('/articleCount',ArticleController.articleCount);
 
 module.exports = router;
