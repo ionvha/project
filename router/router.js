@@ -9,6 +9,7 @@ const router = express.Router();
 const upload = multer({dest:"uploads/"}) //设置上传的目录，会自动创建
 
 const dbConfing = require("../config/dbconfig.js")
+const dbQueryPromise = require('../model/query-promise');
 // const app = express();
 var connection = mysql.createConnection(dbConfing);
 
@@ -25,11 +26,20 @@ connection.connect((err)=>{
 const ArticleController = require("../controller/ArticleController.js");
 const UserController = require("../controller/UserController.js");
 const ClassifyController = require("../controller/ClassifyController.js");
+const indexController = require('../controller/indexController.js')
 const dbQuery = require("../model/query.js");
 const { runInContext } = require("vm");
 
+// 首页
+router.get('/',indexController.index)
+
+
+// 首页后台数据
+router.get('/cateArticleCount', indexController.cateArticleCount)
+
+
 // 文章列表
-router.get("/",ArticleController.index);
+router.get("/article",ArticleController.article);
 
 // 文章详情
 router.get("/detail",ArticleController.detail);

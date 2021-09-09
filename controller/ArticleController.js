@@ -14,7 +14,7 @@ let audits = {
 }
 
 // 文章列表
-ArticleController.index = (req,res)=> {
+ArticleController.article = (req,res)=> {
     let userfoin = JSON.parse(req.session.userfoin || '{}');
     let sql = "select t1.*,t2.bookTitle from library_content as t1 left join library_classifys as t2 on t1.cat_id = t2.id where if_recyclek = 1 order by t1.id desc ;";
     dbQuery(sql,(err,rows)=>{
@@ -22,7 +22,7 @@ ArticleController.index = (req,res)=> {
             item.audit = audits[item.audit];
             return item;
         })
-        res.render("index.html",{articles:data,userfoin});
+        res.render("article.html",{articles:data,userfoin});
     })
 }
 
@@ -230,18 +230,28 @@ ArticleController.detail = (req,res) => {
 
 // 获取分页的时候
 ArticleController.articleCount = async (req,res) => {
-    let {curr=1,limit=10} = req.query;
+    let {curr=1,limit=10,title,status} = req.query;
+    let where = '';
+    // console.log(req.query)
+    if(title){
+        where += `and title like '%${title}%'`
+    }
+
+    if(status){
+        where += `and audit = ${status}`
+    }
 
     // 查询文章总记录数
-    let sql = `select count(*) as count from library_content where if_recyclek = 1`
+    let sql = `select count(*) as count from library_content where 1 and if_recyclek = 1 ${where}`
     let Promise1 = dbQueryPromise(sql);
     let offset = (curr - 1) * limit;
 
     let sql2 = `select t1.*,t2.bookTitle from library_content as t1 
     left join library_classifys as t2 on t1.cat_id = t2.id 
-    where if_recyclek = 1 order by t1.id desc limit ${offset},${limit};`
+    where 1 and if_recyclek = 1  ${where}
+    order by t1.id desc limit ${offset},${limit};`
     let Promise2 = dbQueryPromise(sql2);
-    let result = await Promise.all([Promise1,Promise2])
+    let result = await Promise.all([Promise1,Promise2]);
     res.json({
         count:result[0][0].count,
         data:result[1]
