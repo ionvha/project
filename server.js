@@ -40,6 +40,20 @@ artTemplate.defaults.imports.dateFormat = function(time,format = 'YYYY-MM-DD HH:
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 挂载路由中间件
+const router = require("./router/router.js");
+const frontRouter = require('./router/frontRouter.js')
+const { userInfo } = require("os");
+
+// 允许跨域请求
+app.use(function(req,res,next){
+    res.setHeader("Access-Control-Allow-Origin","*")
+    next();
+})
+
+// 前端api路由中间件
+app.use('/api',frontRouter)
+
 app.use((req,res,next)=>{
     let path = req.path.toLocaleLowerCase();
     let unPermissionPath = ['/login','/logout','/dologin','/register','/goregister'];
@@ -55,9 +69,7 @@ app.use((req,res,next)=>{
     }
 })
 
-// 挂载路由中间件
-const router = require("./router/router.js");
-const { userInfo } = require("os");
+// 后端路由中间件
 app.use(router);
 
 app.listen(5000, () => {

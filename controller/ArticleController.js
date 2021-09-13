@@ -51,9 +51,9 @@ ArticleController.insert = (req,res)=>{
     let sql = `insert into library_content(title,author,cat_id,content,picture) values ("${title}","${author}","${id}","${content}","${imgPath}")`;
     dbQuery(sql,(err,result)=>{
         if(result.affectedRows){
-            res.send("<script>alert('添加成功');location.href='/';</script>")
+            res.send("<script>alert('添加成功');location.href='/article';</script>")
         }else{
-            res.send("<script>alert('添加失败');location.href='/';</script>")
+            res.send("<script>alert('添加失败');location.href='/article';</script>")
         }
     })
 }
